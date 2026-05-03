@@ -1,0 +1,83 @@
+================================================================================
+VAE TILING PARAMETER FIX LOG
+================================================================================
+Date: May 3, 2026
+Issue: Node 28 and 497 had incorrect widget_values indices
+
+PROBLEM IDENTIFIED:
+------------------
+Node ID:28 (WanVideoDecode)
+  - normalization: Value not in list
+  - tile_y, tile_x, tile_stride_y, tile_stride_x: Custom validation failed
+
+Node ID:497 (WanVideoEncode)
+  - latent_strength: Value 128.0 bigger than max of 10.0
+  - tile_y: Value 1 smaller than min of 64
+  - noise_aug_strength: Value 128.0 bigger than max of 10.0
+
+ROOT CAUSE:
+-----------
+The optimization script (optimize-workflow.py) was setting values at wrong
+array indices. It was offsetting indices by 2 positions, causing:
+- Boolean values to be placed where integers should be
+- Integer tile sizes to be placed where strength values should be
+- Stride values to overwrite other parameters
+
+CORRECT STRUCTURE:
+------------------
+Node 28 (WanVideoDecode) - widgets_values array:
+  [0] enable_vae_tiling: Boolean (True/False)
+  [1] tile_x: Integer (256)
+  [2] tile_y: Integer (256)
+  [3] tile_stride_x: Integer (128)
+  [4] tile_stride_y: Integer (128)
+  [5] normalization: String ('default')
+
+Node 497 (WanVideoEncode) - widgets_values array:
+  [0] enable_vae_tiling: Boolean (True/False)
+  [1] tile_x: Integer (256)
+  [2] tile_y: Integer (256)
+  [3] tile_stride_x: Integer (128)
+  [4] tile_stride_y: Integer (128)
+  [5] noise_aug_strength: Integer (0)
+  [6] latent_strength: Integer (1)
+
+FIX APPLIED:
+------------
+1. Created fix-vae-tiling.py script
+2. Corrected widget_values arrays for both nodes
+3. Verified all parameters are within valid ranges
+4. Updated optimize-workflow.py to use correct indices
+
+VALIDATION RESULTS:
+-------------------
+✅ Node 28 (WanVideoDecode):
+   - enable_vae_tiling: True ✓
+   - tile_x: 256 ✓
+   - tile_y: 256 ✓
+   - tile_stride_x: 128 ✓
+   - tile_stride_y: 128 ✓
+   - normalization: 'default' ✓
+
+✅ Node 497 (WanVideoEncode):
+   - enable_vae_tiling: True ✓
+   - tile_x: 256 ✓
+   - tile_y: 256 ✓
+   - tile_stride_x: 128 ✓
+   - tile_stride_y: 128 ✓
+   - noise_aug_strength: 0 ✓
+   - latent_strength: 1 ✓
+
+STATUS: ✅ FIXED
+----------------
+All parameters are now correct and within valid ranges.
+Workflow is ready to use in ComfyUI without warnings.
+
+FILES MODIFIED:
+---------------
+1. modify-files/lipsync-ofm+Nabludatel-24GB.json (corrected)
+2. optimize-workflow.py (updated with correct indices)
+3. fix-vae-tiling.py (created for fixing)
+4. validate-vae.py (created for validation)
+
+================================================================================

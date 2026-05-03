@@ -1,0 +1,192 @@
+{
+	"last_node_id": 10,
+	"last_link_id": 7,
+	"nodes": [
+		{
+			"id": 1,
+			"type": "Note",
+			"pos": [50, 50],
+			"size": [600, 300],
+			"flags": {},
+			"order": 0,
+			"mode": 0,
+			"properties": {"text": ""},
+			"widgets_values": [
+				"📹 VIDEO UPSCALE WORKFLOW\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n🎯 PURPOSE: Upscale any video to 2x resolution using FlashVSR AI\n\n📋 INSTRUCTIONS:\n\n1️⃣ UPLOAD VIDEO:\n   • Click 'Load Video' node → Choose video file\n   • Supports: MP4, MOV, AVI, WebM\n   • Max recommended: 30 seconds for 24GB VRAM\n\n2️⃣ CONFIGURE UPSCALE SETTINGS (Node: FlashVSR Upscaler):\n   • Scale: 2 = 2x resolution (480p→960p, 720p→1440p)\n   • Mode: 'tiny-long' for videos >10s, 'tiny-short' for <10s\n   • Tiled DIT: true (recommended for long videos)\n   • Tiled VAE: false (enable if VRAM exceeded)\n\n3️⃣ OUTPUT SETTINGS (Node: Video Output):\n   • CRF: 18 (lower = better quality, larger file)\n   • Frame Rate: 24 fps (change if your video uses different FPS)\n   • Filename: Change prefix if needed\n\n4️⃣ QUEUE PROMPT → Wait → Download result!\n\n💾 VRAM GUIDE (24GB):\n   • 480p→960p:  ~8-10GB  ✅ Safe\n   • 720p→1440p: ~12-16GB ✅ OK\n   • 1080p→4K:   ~18-22GB ⚠️ Use tiled VAE\n\n⏱️ PROCESSING TIME: ~2-3 min per 10 seconds of video"
+			],
+			"color": "#233",
+			"bgcolor": "#355"
+		},
+		{
+			"id": 2,
+			"type": "VHS_LoadVideo",
+			"pos": [50, 380],
+			"size": {"0": 315, "1": 290},
+			"flags": {},
+			"order": 1,
+			"mode": 0,
+			"inputs": [],
+			"outputs": [
+				{"name": "IMAGE", "type": "IMAGE", "links": [1, 2]},
+				{"name": "frame_count", "type": "INT", "links": null},
+				{"name": "audio", "type": "AUDIO", "links": [3]},
+				{"name": "video_info", "type": "VHS_VIDEOINFO", "links": null}
+			],
+			"title": "📁 Load Video (Upload Here)",
+			"properties": {"Node name for S&R": "VHS_LoadVideo"},
+			"widgets_values": {
+				"video": "",
+				"force_rate": 0,
+				"force_size": "Disabled",
+				"frame_load_cap": 0,
+				"skip_first_frames": 0
+			},
+			"color": "#232",
+			"bgcolor": "#353"
+		},
+		{
+			"id": 4,
+			"type": "Note",
+			"pos": [700, 50],
+			"size": [450, 150],
+			"flags": {},
+			"order": 3,
+			"mode": 0,
+			"properties": {"text": ""},
+			"widgets_values": [
+				"⚙️ UPSCALE SETTINGS GUIDE\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n🎚️ QUALITY PRESETS:\n\n🟢 FAST (Tiled: OFF): Short clips <10s, 480p-720p\n   VRAM: ~8-12GB | Speed: ⭐⭐⭐⭐⭐\n\n🟡 BALANCED (Tiled DIT: ON): 10-30s clips ← RECOMMENDED\n   VRAM: ~10-16GB | Speed: ⭐⭐⭐⭐\n\n🔴 SAFE (All Tiled: ON): Long videos, 1080p+\n   VRAM: ~12-18GB | Speed: ⭐⭐⭐"
+			],
+			"color": "#233",
+			"bgcolor": "#355"
+		},
+		{
+			"id": 5,
+			"type": "FlashVSRNode",
+			"pos": [700, 250],
+			"size": {"0": 400, "1": 420},
+			"flags": {},
+			"order": 4,
+			"mode": 0,
+			"inputs": [{"name": "frames", "type": "IMAGE", "link": 1}],
+			"outputs": [{"name": "image", "type": "IMAGE", "links": [6, 7]}],
+			"title": "🚀 FlashVSR Upscaler (Main Settings Here)",
+			"properties": {"Node name for S&R": "FlashVSRNode"},
+			"widgets_values": ["FlashVSR-v1.1", "tiny-long", 2, false, true, false, 608],
+			"color": "#223",
+			"bgcolor": "#335"
+		},
+		{
+			"id": 6,
+			"type": "Note",
+			"pos": [700, 720],
+			"size": [400, 180],
+			"flags": {},
+			"order": 5,
+			"mode": 0,
+			"properties": {"text": ""},
+			"widgets_values": [
+				"🎛️ PARAMETER EXPLANATION:\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n• Mode:\n  'tiny-short': < 10 seconds\n  'tiny-long': > 10 seconds ✅\n\n• Scale: 2 (doubles resolution)\n  480x832 → 960x1664\n  720p → 1440p\n  1080p → 4K\n\n• Tiled VAE: false (use if VRAM error)\n• Tiled DIT: true (smoother)\n• Seed: 608"
+			],
+			"color": "#233",
+			"bgcolor": "#355"
+		},
+		{
+			"id": 7,
+			"type": "PreviewImage",
+			"pos": [1180, 250],
+			"size": {"0": 300, "1": 350},
+			"flags": {},
+			"order": 6,
+			"mode": 0,
+			"inputs": [{"name": "images", "type": "IMAGE", "link": 2}],
+			"title": "🖼️ Input Preview (Before)",
+			"properties": {"Node name for S&R": "PreviewImage"}
+		},
+		{
+			"id": 8,
+			"type": "PreviewImage",
+			"pos": [1180, 650],
+			"size": {"0": 300, "1": 350},
+			"flags": {},
+			"order": 7,
+			"mode": 0,
+			"inputs": [{"name": "images", "type": "IMAGE", "link": 6}],
+			"title": "✨ Output Preview (After Upscale)",
+			"properties": {"Node name for S&R": "PreviewImage"},
+			"color": "#223",
+			"bgcolor": "#335"
+		},
+		{
+			"id": 9,
+			"type": "VHS_VideoCombine",
+			"pos": [1550, 250],
+			"size": {"0": 400, "1": 500},
+			"flags": {},
+			"order": 8,
+			"mode": 0,
+			"inputs": [
+				{"name": "images", "type": "IMAGE", "link": 7},
+				{"name": "audio", "type": "AUDIO", "link": 3}
+			],
+			"outputs": [{"name": "Filenames", "type": "VHS_FILENAMES", "links": null}],
+			"title": "💾 Video Output (Download Here)",
+			"properties": {"Node name for S&R": "VHS_VideoCombine"},
+			"widgets_values": {
+				"frame_rate": 24,
+				"loop_count": 0,
+				"filename_prefix": "upscaled",
+				"format": "video/h264-mp4",
+				"pix_fmt": "yuv420p",
+				"crf": 18,
+				"save_output": true
+			},
+			"color": "#232",
+			"bgcolor": "#353"
+		},
+		{
+			"id": 10,
+			"type": "Note",
+			"pos": [1550, 800],
+			"size": [400, 230],
+			"flags": {},
+			"order": 9,
+			"mode": 0,
+			"properties": {"text": ""},
+			"widgets_values": [
+				"💾 OUTPUT SETTINGS:\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n• CRF (Quality):\n  18: High quality (large file) ✅\n  21: Balanced\n  23: Good (smaller file)\n  Lower = Better\n\n• Frame Rate:\n  24 fps (default) ✅\n  30 fps (for 30fps videos)\n  60 fps (for 60fps videos)\n  ⚠️ Must match source video FPS!\n\n• Format: H.264 MP4\n• Filename: Change 'upscaled' prefix\n\n✅ Output: ComfyUI/output/ folder"
+			],
+			"color": "#233",
+			"bgcolor": "#355"
+		}
+	],
+	"links": [
+		[1, 2, 0, 5, 0, "IMAGE"],
+		[2, 2, 0, 7, 0, "IMAGE"],
+		[3, 2, 2, 9, 1, "AUDIO"],
+		[6, 5, 0, 8, 0, "IMAGE"],
+		[7, 5, 0, 9, 0, "IMAGE"]
+	],
+	"groups": [
+		{
+			"title": "📥 INPUT SECTION",
+			"bounding": [20, -20, 650, 720],
+			"color": "#3f789e",
+			"font_size": 24
+		},
+		{
+			"title": "🚀 UPSCALE SECTION",
+			"bounding": [680, -20, 450, 950],
+			"color": "#8A8",
+			"font_size": 24
+		},
+		{
+			"title": "📤 OUTPUT SECTION",
+			"bounding": [1150, -20, 830, 1050],
+			"color": "#A88",
+			"font_size": 24
+		}
+	],
+	"config": {},
+	"extra": {},
+	"version": 0.4
+}
